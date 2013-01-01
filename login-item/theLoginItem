@@ -1,0 +1,13 @@
+#!/bin/bash
+LoggedInUser=`/bin/ls -l /dev/console | /usr/bin/awk '{ print $3 }'`
+sleep 60
+/usr/bin/osascript <<-EOF
+	tell application "System Events"
+	make login item at end with properties {path:"/Applications/Something.app", kind:application}
+	end tell
+    to echo(something)
+          do shell script "echo " & quoted form of something
+       end echo
+	EOF
+	
+rm /Users/$LoggedInUser/Library/LaunchAgents/com.grahamgilbert.loginitem.plist

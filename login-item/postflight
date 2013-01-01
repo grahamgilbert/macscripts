@@ -1,0 +1,19 @@
+#!/bin/bash
+for dir in /Users/*/
+do
+    dir=${dir%*/}
+	
+    if [ ${dir##*/} != "Shared" ]; then
+        ##make the Launchagents folder if it's not there
+        mkdir -p /Users/${dir##*/}/Library/LaunchAgents
+        ##copy the launchagent to each user
+        cp /tmp/com.grahamgilbert.loginitem.plist /Users/${dir##*/}/Library/LaunchAgents/com.grahamgilbert.loginitem.plist
+        chmod 644 /Users/${dir##*/}/Library/LaunchAgentscom.grahamgilbert.loginitem.plist
+        chown -R ${dir##*/} /Users/${dir##*/}/Library/LaunchAgents
+    
+    fi
+done
+
+##now copy the plist to the default user template so it affects new users
+mkdir -p /System/Library/User\ Template/Non_localized/Library/LaunchAgents
+cp /tmp/com.grahamgilbert.loginitem.plist /System/Library/User\ Template/Non_localized/Library/LaunchAgents/com.grahamgilbert.loginitem.plist
