@@ -6,6 +6,7 @@ from shutil import move, rmtree
 from os import remove, close, path, rename, umask
 import subprocess
 import math
+import time
 
 def downloadChunks(url):
     """Helper to download large files
