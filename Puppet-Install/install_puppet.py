@@ -8,7 +8,12 @@ import subprocess
 import math
 import time
 import argparse
-    
+
+parser = argparse.ArgumentParser(description='Installs and configures Puppet on OS X')
+parser.add_argument('--server', help='The URL of the Puppet Server. Defaults to puppet.grahamgilbert.dev')
+parser.add_argument('--certname', help='The certname of the client. Defaults to client.grahamgilbert.dev')
+parser.add_argument('--appendhosts', action='store_true', help='If using with the Vagrant-based Puppet Master, appends the hosts file with the default IP address')
+args = vars(parser.parse_args())
 def downloadChunks(url):
     """Helper to download large files
         the only arg is a url
@@ -54,12 +59,6 @@ def internet_on():
     return False
     
 if internet_on:
-    parser = argparse.ArgumentParser(description='Installs and configures Puppet on OS X')
-    parser.add_argument('--server', help='The URL of the Puppet Server. Defaults to puppet.grahamgilbert.dev')
-    parser.add_argument('--certname', help='The certname of the client. Defaults to client.grahamgilbert.dev')
-    parser.add_argument('--appendhosts', help='If using with the Vagrant-based Puppet Master, appends the hosts file with the default IP address')
-    args = vars(parser.parse_args())
-    
     if args['server']:
         puppetserver = args['server']
     else:
@@ -70,9 +69,10 @@ if internet_on:
     else:
         certname = 'client.grahamgilbert.dev'
     
-    if args['appendhosts'] == 'true':
+    if args['appendhosts']:
         with open("/etc/hosts", "a") as myfile:
-            myfile.write("192.168.33.10 puppet.grahamgilbert.dev"
+            myfile.write("192.168.33.10 puppet.grahamgilbert.dev")
+    
     if path.isdir('/var/lib/puppet'):
         print "Binning old Puppet installation"
         rmtree('/var/lib/puppet')
