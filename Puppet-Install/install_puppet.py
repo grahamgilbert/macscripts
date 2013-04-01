@@ -7,7 +7,23 @@ from os import remove, close, path, rename, umask
 import subprocess
 import math
 import time
+import argparse
 
+parser = argparse.ArgumentParser(description='Installs and configures Puppet on OS X')
+parser.add_argument('--server', help='The URL of the Puppet Server. Defaults to puppet.grahamgilbert.dev')
+parser.add_argument('--certname', help='The certname of the client. Defaults to client.grahamgilbert.dev')
+args = vars(parser.parse_args())
+
+if args['server']:
+    puppetserver = args['server']
+else:
+    puppetserver = 'puppet.grahamgilbert.dev'
+
+if args['certname']:
+    certname = args['certname']
+else:
+    certname = 'client.grahamgilbert.dev'
+    
 def downloadChunks(url):
     """Helper to download large files
         the only arg is a url
@@ -47,7 +63,7 @@ def downloadChunks(url):
 
 def internet_on():
     try:
-        response=urllib2.urlopen('http://74.125.113.99',timeout=1)
+        response=urllib2.urlopen(puppetserver,timeout=1)
         return True
     except urllib2.URLError as err: pass
     return False
@@ -59,7 +75,7 @@ if internet_on:
     if path.isdir('/etc/puppet'):
         rmtree('/etc/puppet')
     print "Downloading Facter"
-    the_dmg = downloadChunks("http://downloads.puppetlabs.com/mac/facter-1.6.17.dmg")
+    the_dmg = downloadChunks("http://downloads.puppetlabs.com/mac/facter-1.6.18.dmg")
     print "Mounting Facter DMG"
     the_command = "/usr/bin/hdiutil attach "+the_dmg
     p=subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
@@ -67,12 +83,12 @@ if internet_on:
     time.sleep(10)
     #install it
     print "Installing Facter"
-    the_command = "/usr/sbin/installer -pkg /Volumes/facter-1.6.17/facter-1.6.17.pkg -target /"
+    the_command = "/usr/sbin/installer -pkg /Volumes/facter-1.6.18/facter-1.6.18.pkg -target /"
     p=subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     p.wait()
     time.sleep(20)
     print "Downloading Puppet"
-    the_dmg = downloadChunks("http://downloads.puppetlabs.com/mac/puppet-3.0.2.dmg")
+    the_dmg = downloadChunks("http://downloads.puppetlabs.com/mac/puppet-3.1.1.dmg")
     ##mount the dmg
     print "Mounting Puppet DMG"
     the_command = "/usr/bin/hdiutil attach "+the_dmg
@@ -80,16 +96,28 @@ if internet_on:
     p.wait()
     time.sleep(10)
     print "Installing Puppet"
-    the_command = "/usr/sbin/installer -pkg /Volumes/puppet-3.0.2/puppet-3.0.2.pkg -target /"
+    the_command = "/usr/sbin/installer -pkg /Volumes/puppet-3.1.1/puppet-3.1.1.pkg -target /"
     p=subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     p.wait()
     time.sleep(20)
     print "Ejecting Puppet"
-    the_command = "hdiutil eject /Volumes/puppet-3.0.2"
+    the_command = "hdiutil eject /Volumes/puppet-3.1.1"
     subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
     
     print "Ejecting Facter"
-    the_command = "hdiutil eject /Volumes/facter-1.6.17"
+    the_command = "hdiutil eject /Volumes/facter-1.6.18"
     subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
+    
+    data = "[main]\nlogdir=/var/log/puppet\nvardir=/var/lib/puppet\nssldir=/var/lib/puppet/ssl\n#rundir=/var/run/puppet\nfactpath=$vardir/lib/facter\ntemplatedir=$confdir/templates\n\n[master]\n# These are needed when the puppetmaster is run by passenger\n# and can safely be removed if webrick is used.\nssl_client_header = SSL_CLIENT_S_DN \nssl_client_verify_header = SSL_CLIENT_VERIFY\n\n[agent]\nserver="+puppetserver+"\ncertname="+certname+"\nreport=true\npluginsync=true"
+    the_command = "/usr/bin/touch /etc/puppet/puppet.conf"
+    p=subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    
+    print "writing the puppet configuration"
+    file = open("/etc/puppet/puppet.conf", "w")
+    file.write(data)
+    file.close()
+    
+    
+
     
     print "All done!"
