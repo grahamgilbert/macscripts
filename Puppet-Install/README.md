@@ -18,7 +18,7 @@ The following options can be passed to the script:
 sudo python install_puppet.py --server puppet.example.com --certname my-client.example.com
 ```
 
-Will install Puppet, write ``/etc/puppet/puppet.conf``` but will leave ``/etc/hosts`` untouched.
+Will install Puppet, write ``/etc/puppet/puppet.conf`` but will leave ``/etc/hosts`` untouched.
 
 ``` bash
 sudo python install_puppet.py --appendhosts
