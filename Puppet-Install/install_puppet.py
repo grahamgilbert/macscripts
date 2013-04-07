@@ -16,6 +16,11 @@ parser.add_argument('--certname', help='The certname of the client. Defaults to 
 parser.add_argument('--serial', action='store_true', help='Use the Mac\'s serial number as the certname')
 parser.add_argument('--appendhosts', action='store_true', help='If using with the Vagrant-based Puppet Master, appends the hosts file with the default IP address')
 args = vars(parser.parse_args())
+
+if args['server']:
+    puppetserver = args['server']
+else:
+    puppetserver = 'puppet.grahamgilbert.dev'
 def downloadChunks(url):
     """Helper to download large files
         the only arg is a url
@@ -61,11 +66,6 @@ def internet_on():
     return False
     
 if internet_on:
-    if args['server']:
-        puppetserver = args['server']
-    else:
-        puppetserver = 'puppet.grahamgilbert.dev'
-    
     if args['certname']:
         certname = args['certname']
     else:
@@ -74,7 +74,8 @@ if internet_on:
     if args['serial']:
         the_command = "ioreg -c \"IOPlatformExpertDevice\" | awk -F '\"' '/IOPlatformSerialNumber/ {print $4}'"
         serial = subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
-        certname = re.sub(r'\s', '', serial)
+        serial = re.sub(r'\s', '', serial)
+        certname = serial.lower()
     
     if args['appendhosts']:
         with open("/etc/hosts", "a") as myfile:
