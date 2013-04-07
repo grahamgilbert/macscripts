@@ -11,4 +11,4 @@ It requires [The Luggage](https://github.com/unixorn/luggage) to build the packa
 
 Open up puppet_bootstrap and edit the address of the Puppet Server to match your own environment and add the flags required to the puppet_install.py script.
 ##What's happening
-We pop theLoginItem (the script that does the real work) in /usr/local/management, and then loop over all the user's with home directories in /Users (thus avoiding our management account with it's home in /var) putting a LaunchAgent in each user's home. We then put the LaunchAgent in the default user template. The script will delete the LaunchAgent after it has run, so it will only set the Login Item once.
+We pop puppet_bootstrap (the script that does the real work) in /usr/local/puppet_bootstrap. This then runs at boot, and downloads the latest version of the real bootstrap script.
