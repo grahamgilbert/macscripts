@@ -8,10 +8,12 @@ import subprocess
 import math
 import time
 import argparse
+import re
 
 parser = argparse.ArgumentParser(description='Installs and configures Puppet on OS X')
 parser.add_argument('--server', help='The URL of the Puppet Server. Defaults to puppet.grahamgilbert.dev')
 parser.add_argument('--certname', help='The certname of the client. Defaults to client.grahamgilbert.dev')
+parser.add_argument('--serial', action='store_true', help='Use the Mac\'s serial number as the certname')
 parser.add_argument('--appendhosts', action='store_true', help='If using with the Vagrant-based Puppet Master, appends the hosts file with the default IP address')
 args = vars(parser.parse_args())
 def downloadChunks(url):
@@ -68,6 +70,11 @@ if internet_on:
         certname = args['certname']
     else:
         certname = 'client.grahamgilbert.dev'
+        
+    if args['serial']:
+        the_command = "ioreg -c \"IOPlatformExpertDevice\" | awk -F '\"' '/IOPlatformSerialNumber/ {print $4}'"
+        serial = subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
+        certname = re.sub(r'\s', '', serial)
     
     if args['appendhosts']:
         with open("/etc/hosts", "a") as myfile:
