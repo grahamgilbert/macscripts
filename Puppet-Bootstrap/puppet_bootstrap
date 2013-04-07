@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Your Puppet server here
+PUPPETSERVER='puppet.grahamgilbert.dev'
+
+# Download, install and configure Puppet and Facter
+curl -o /tmp/install_puppet.py https://raw.github.com/grahamgilbert/macscripts/master/Puppet-Install/install_puppet.py; python /tmp/install_puppet.py --serial --server $PUPPETSERVER
+
+# Run Puppet
+puppet agent -t
+
+# Clean up a little
+rm /Library/LaunchDaemons/com.grahamgilbert.puppet_bootstrap.plist
+rm -r /usr/local/puppet_bootstrap
+
+# reboot
+reboot
