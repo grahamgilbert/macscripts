@@ -75,6 +75,9 @@ if internet_on:
         the_command = "ioreg -c \"IOPlatformExpertDevice\" | awk -F '\"' '/IOPlatformSerialNumber/ {print $4}'"
         serial = subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
         serial = re.sub(r'\s', '', serial)
+        # remove the silly characters that VMware likes to put in occasionally
+        serial = serial.replace("+", "")
+        serial = serial.replace("/", "")
         certname = serial.lower()
     
     if args['appendhosts']:
