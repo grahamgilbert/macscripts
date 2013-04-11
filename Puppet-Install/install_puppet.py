@@ -132,7 +132,4 @@ if internet_on:
     file.write(data)
     file.close()
     
-    
-
-    
     print "All done!"
