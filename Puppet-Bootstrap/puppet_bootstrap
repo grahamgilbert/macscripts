@@ -3,6 +3,15 @@
 # Your Puppet server here
 PUPPETSERVER='puppet.grahamgilbert.dev'
 
+TESTURL='https://raw.github.com'
+
+# Test for network conection. Github needs to be up for this to work, so it might as well be that
+if curl --output /dev/null --silent --head --fail "$TESTURL"; then
+  echo "URL exists: $TESTURL"
+else
+  exit 1
+fi
+
 # Download, install and configure Puppet and Facter
 curl -o /tmp/install_puppet.py https://raw.github.com/grahamgilbert/macscripts/master/Puppet-Install/install_puppet.py; python /tmp/install_puppet.py --serial --server $PUPPETSERVER
 
