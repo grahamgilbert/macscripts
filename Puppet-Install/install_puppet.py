@@ -14,6 +14,7 @@ parser = argparse.ArgumentParser(description='Installs and configures Puppet on 
 parser.add_argument('--server', help='The URL of the Puppet Server. Defaults to puppet.grahamgilbert.dev')
 parser.add_argument('--certname', help='The certname of the client. Defaults to client.grahamgilbert.dev')
 parser.add_argument('--serial', action='store_true', help='Use the Mac\'s serial number as the certname')
+parser.add_argument('--clean_serial', action='store_true', help='Use the Mac\'s serial number as the certname, with aaa prepended to it if the first character is a digit.')
 parser.add_argument('--appendhosts', action='store_true', help='If using with the Vagrant-based Puppet Master, appends the hosts file with the default IP address')
 args = vars(parser.parse_args())
 
@@ -78,6 +79,17 @@ if internet_on:
         # remove the silly characters that VMware likes to put in occasionally
         serial = serial.replace("+", "")
         serial = serial.replace("/", "")
+        certname = serial.lower()
+        
+    if args['clean_serial']:
+        the_command = "ioreg -c \"IOPlatformExpertDevice\" | awk -F '\"' '/IOPlatformSerialNumber/ {print $4}'"
+        serial = subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
+        serial = re.sub(r'\s', '', serial)
+        # remove the silly characters that VMware likes to put in occasionally
+        serial = serial.replace("+", "")
+        serial = serial.replace("/", "")
+        if serial[0].isdigit():
+            serial = "aaa"+serial
         certname = serial.lower()
     
     if args['appendhosts']:
