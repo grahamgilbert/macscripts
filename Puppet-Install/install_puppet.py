@@ -102,7 +102,7 @@ if internet_on:
     if path.isdir('/etc/puppet'):
         rmtree('/etc/puppet')
     print "Downloading Facter"
-    the_dmg = downloadChunks("http://downloads.puppetlabs.com/mac/facter-1.6.18.dmg")
+    the_dmg = downloadChunks("http://downloads.puppetlabs.com/mac/facter-1.7.0.dmg")
     print "Mounting Facter DMG"
     the_command = "/usr/bin/hdiutil attach "+the_dmg
     p=subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
@@ -110,7 +110,7 @@ if internet_on:
     time.sleep(10)
     #install it
     print "Installing Facter"
-    the_command = "/usr/sbin/installer -pkg /Volumes/facter-1.6.18/facter-1.6.18.pkg -target /"
+    the_command = "/usr/sbin/installer -pkg /Volumes/facter-1.7.0/facter-1.7.0.pkg -target /"
     p=subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     p.wait()
     time.sleep(20)
@@ -132,7 +132,7 @@ if internet_on:
     subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
     
     print "Ejecting Facter"
-    the_command = "hdiutil eject /Volumes/facter-1.6.18"
+    the_command = "hdiutil eject /Volumes/facter-1.7.0"
     subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
     
     data = "[main]\nlogdir=/var/log/puppet\nvardir=/var/lib/puppet\nssldir=/var/lib/puppet/ssl\n#rundir=/var/run/puppet\nfactpath=$vardir/lib/facter\ntemplatedir=$confdir/templates\n\n[master]\n# These are needed when the puppetmaster is run by passenger\n# and can safely be removed if webrick is used.\nssl_client_header = SSL_CLIENT_S_DN \nssl_client_verify_header = SSL_CLIENT_VERIFY\n\n[agent]\nserver="+puppetserver+"\ncertname="+certname+"\nreport=true\npluginsync=true"
