@@ -1,0 +1,5 @@
+#!/bin/sh
+
+rm -rf /var/lib/puppet/mobileconfigs
+
+exit 0
