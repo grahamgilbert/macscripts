@@ -13,7 +13,7 @@ task = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 (out, err) = task.communicate()
 
 formatted = plistlib.readPlistFromString(out)
-# if group maches, exit 1 as we don't need to install
+# if group matches, exit 1 as we don't need to install
 if formatted['group'] == group:
     sys.exit(1)
 else:
