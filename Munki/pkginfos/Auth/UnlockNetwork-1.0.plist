@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>autoremove</key>
+    <false/>
+    <key>catalogs</key>
+    <array>
+            <string>production</string>
+    </array>
+    <key>description</key>
+    <string>Opens Network System Preferences to Everyone</string>
+    <key>display_name</key>
+    <string>Open Network System Preferences</string>
+    <key>name</key>
+    <string>UnlockNetwork</string>
+    <key>installer_type</key>
+    <string>nopkg</string>
+    <key>minimum_os_version</key>
+    <string>10.8.0</string>
+    <key>unattended_install</key>
+    <true/>
+    <key>version</key>
+    <string>1.0</string>
+    <key>requires</key>
+    <array>
+        <string>OpenSysPrefs</string>
+    </array>  
+    <key>uninstallable</key>
+    <true/> 
+	<key>installcheck_script</key>
+	<string>#!/usr/bin/env python
+
+import subprocess
+import sys
+import plistlib
+import platform
+
+# Group System Preferences should be opened to
+group = 'everyone'
+
+# Get the OS Version
+v = platform.mac_ver()[0][:4]
+
+command = ['security', 'authorizationdb', 'read', 'system.preferences.network']
+
+task = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+(out, err) = task.communicate()
+
+formatted = plistlib.readPlistFromString(out)
+
+command = ['security', 'authorizationdb', 'read', 'system.services.systemconfiguration.network']
+
+task = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+(out, err) = task.communicate()
+
+formatted2 = plistlib.readPlistFromString(out)
+
+# Need to check the group for 10.9, and the rule for 10.8
+# if group matches for both rights, exit 1 as we don't need to install
+if v == '10.9':    
+    if formatted['group'] == group and formatted2['group'] == group:
+        sys.exit(1)
+    else:
+        # if it doesn't we're exiting with 0 as we need to perform the install
+        sys.exit(0)
+ 
+if v == '10.8':
+    if formatted['group'] == group and formatted2['rule'] == 'allow':
+        sys.exit(1)
+    else:
+        # if it doesn't we're exiting with 0 as we need to perform the install
+        sys.exit(0)</string>
+	<key>postinstall_script</key>
+	<string>#!/usr/bin/env python
+
+import subprocess
+import sys
+import plistlib
+import platform
+
+# Group System Preferences should be opened to
+group = 'everyone'
+
+# Get the OS Version
+v = platform.mac_ver()[0][:4]
+
+command = ['security', 'authorizationdb', 'read', 'system.services.systemconfiguration.network']
+
+task = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+(out, err) = task.communicate()
+formatted = plistlib.readPlistFromString(out)
+
+# If we're on 10.9 and the group doesn't match, we're going to correct it.
+if v == '10.9':
+    if formatted['group'] != group:
+        formatted['group'] = group
+        # Convert back to plist
+        input_plist = plistlib.writePlistToString(formatted)
+        # Write the plist back to the authorizationdb
+        command = ['security', 'authorizationdb', 'write', 'system.services.systemconfiguration.network']
+        task = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        (out, err) = task.communicate(input=input_plist)
+
+# If we're on 10.8 and the rule doesn't match, we're going to correct it.
+if v == '10.8':
+    if formatted['rule'] != 'allow':
+        formatted['rule'] = 'allow'
+        # Convert back to plist
+        input_plist = plistlib.writePlistToString(formatted)
+        # Write the plist back to the authorizationdb
+        command = ['security', 'authorizationdb', 'write', 'system.services.systemconfiguration.network']
+        task = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        (out, err) = task.communicate(input=input_plist) 
+
+command = ['security', 'authorizationdb', 'read', 'system.preferences.network']
+
+task = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+(out, err) = task.communicate()
+formatted = plistlib.readPlistFromString(out)
+
+# If the group doesn't match, we're going to correct it.
+if formatted['group'] != group:
+    formatted['group'] = group
+    # Convert back to plist
+    input_plist = plistlib.writePlistToString(formatted)
+    # Write the plist back to the authorizationdb
+    command = ['security', 'authorizationdb', 'write', 'system.preferences.network']
+    task = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    (out, err) = task.communicate(input=input_plist)</string>
+	<key>uninstall_method</key>
+	<string>uninstall_script</string>
+	<key>uninstall_script</key>
+	<string>#!/usr/bin/env python
+
+import subprocess
+import sys
+import plistlib
+import platform
+
+# Group System Preferences should be opened to
+group = 'admin'
+
+# Get the OS Version
+v = platform.mac_ver()[0][:4]
+
+command = ['security', 'authorizationdb', 'read', 'system.services.systemconfiguration.network']
+
+task = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+(out, err) = task.communicate()
+formatted = plistlib.readPlistFromString(out)
+
+# If we're on 10.9 and the group doesn't match, we're going to correct it.
+if v == '10.9':
+    if formatted['group'] != group:
+        formatted['group'] = group
+        # Convert back to plist
+        input_plist = plistlib.writePlistToString(formatted)
+        # Write the plist back to the authorizationdb
+        command = ['security', 'authorizationdb', 'write', 'system.services.systemconfiguration.network']
+        task = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        (out, err) = task.communicate(input=input_plist)
+
+# If we're on 10.8 and the rule doesn't match, we're going to correct it.
+if v == '10.8':
+    if formatted['rule'] != 'root-or-entitled-admin-or-app-specific-admin':
+        formatted['rule'] = 'root-or-entitled-admin-or-app-specific-admin'
+        # Convert back to plist
+        input_plist = plistlib.writePlistToString(formatted)
+        # Write the plist back to the authorizationdb
+        command = ['security', 'authorizationdb', 'write', 'system.services.systemconfiguration.network']
+        task = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        (out, err) = task.communicate(input=input_plist) 
+
+command = ['security', 'authorizationdb', 'read', 'system.preferences.network']
+
+task = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+(out, err) = task.communicate()
+formatted = plistlib.readPlistFromString(out)
+
+# If the group doesn't match, we're going to correct it.
+if formatted['group'] != group:
+    formatted['group'] = group
+    # Convert back to plist
+    input_plist = plistlib.writePlistToString(formatted)
+    # Write the plist back to the authorizationdb
+    command = ['security', 'authorizationdb', 'write', 'system.preferences.network']
+    task = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    (out, err) = task.communicate(input=input_plist)</string>
+</dict>
+</plist>
+
