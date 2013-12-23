@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>autoremove</key>
+    <false/>
+    <key>catalogs</key>
+    <array>
+        <string>production</string>
+    </array>
+    <key>description</key>
+    <string>Opens Print System Preferences to Everyone</string>
+    <key>display_name</key>
+    <string>Open Print System Preferences</string>
+    <key>name</key>
+    <string>UnlockPrinting</string>
+    <key>installer_type</key>
+    <string>nopkg</string>
+    <key>minimum_os_version</key>
+    <string>10.8.0</string>
+    <key>unattended_install</key>
+    <true/>
+    <key>version</key>
+    <string>1.0</string>
+    <key>requires</key>
+    <array>
+        <string>OpenSysPrefs</string>
+    </array>  
+    <key>uninstallable</key>
+    <true/>
+	<key>installcheck_script</key>
+	<string>#!/usr/bin/env python
+
+import subprocess
+import sys
+import plistlib
+
+# Group Printing System Preferences should be opened to
+group = 'everyone'
+
+command = ['security', 'authorizationdb', 'read', 'system.preferences.printing']
+
+task = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+(out, err) = task.communicate()
+
+formatted = plistlib.readPlistFromString(out)
+
+# Get all of the groups nested under lpadmin
+command = ['dscl', '/Local/Default', 'read', '/Groups/lpadmin', 'NestedGroups']
+task = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+(out, err) = task.communicate()
+
+list = out.strip().split(" ")
+
+# Get the GUID of the desired group
+
+command = ['dscl', '/Local/Default', 'read', '/Groups/'+group, 'GeneratedUID']
+task = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+(out, err) = task.communicate()
+guid = out.strip().replace('GeneratedUID: ', '')
+
+# Iterate over all of the groups, if one of them is the specified group, we this part doesn't need to be installed.
+for pos,item in enumerate(list):
+    if item != 'NestedGroups:':
+        if item == guid:
+            groupPresent = True
+
+# if group matches, exit 1 as we don't need to install
+if formatted['group'] == group and groupPresent == True:
+    sys.exit(1)
+else:
+    # if it doesn't we're exiting with 0 as we need to perform the install
+    sys.exit(0)</string>
+	<key>minimum_os_version</key>
+	<string>10.4.0</string>
+	<key>postinstall_script</key>
+	<string>#!/usr/bin/env python
+
+import subprocess
+import sys
+import plistlib
+
+# Group System Preferences should be opened to
+group = 'everyone'
+
+command = ['security', 'authorizationdb', 'read', 'system.preferences.printing']
+
+task = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+(out, err) = task.communicate()
+formatted = plistlib.readPlistFromString(out)
+
+# If the group doesn't match, we're going to correct it.
+if formatted['group'] != group:
+    formatted['group'] = group
+    # Convert back to plist
+    input_plist = plistlib.writePlistToString(formatted)
+    # Write the plist back to the authorizationdb
+    command = ['security', 'authorizationdb', 'write', 'system.preferences.printing']
+    task = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    (out, err) = task.communicate(input=input_plist)
+    
+
+# Get all of the groups nested under lpadmin
+command = ['dscl', '/Local/Default', 'read', '/Groups/lpadmin', 'NestedGroups']
+task = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+(out, err) = task.communicate()
+
+list = out.strip().split(" ")
+
+# Get the GUID of the desired group
+
+command = ['dscl', '/Local/Default', 'read', '/Groups/'+group, 'GeneratedUID']
+task = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+(out, err) = task.communicate()
+guid = out.strip().replace('GeneratedUID: ', '')
+
+# Iterate over all of the groups, if one of them is the specified group, we this part doesn't need to be installed.
+groupPresent = False
+for pos,item in enumerate(list):
+    if item != 'NestedGroups:':
+        if item == guid:
+            groupPresent = True
+
+# if groupPresent isn't True, then we need to add the desired group to lpadmin
+
+if groupPresent != True:
+    command = ['dseditgroup', '-o', 'edit', '-n', '/Local/Default', '-a', group, '-t', 'group', 'lpadmin']
+    task = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    (out, err) = task.communicate()</string>
+	<key>uninstall_method</key>
+	<string>uninstall_script</string>
+	<key>uninstall_script</key>
+	<string>#!/usr/bin/env python
+
+import subprocess
+import sys
+import plistlib
+
+# Group System Preferences was be opened to
+group = 'everyone'
+
+command = ['security', 'authorizationdb', 'read', 'system.preferences.printing']
+
+task = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+(out, err) = task.communicate()
+formatted = plistlib.readPlistFromString(out)
+
+
+originalGroup = 'admin'
+# If the group doesn't match, we're going to correct it.
+if formatted['group'] != originalGroup:
+    formatted['group'] = originalGroup
+    # Convert back to plist
+    input_plist = plistlib.writePlistToString(formatted)
+    # Write the plist back to the authorizationdb
+    command = ['security', 'authorizationdb', 'write', 'system.preferences.printing']
+    task = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    (out, err) = task.communicate(input=input_plist)
+    
+
+# Get all of the groups nested under lpadmin
+command = ['dscl', '/Local/Default', 'read', '/Groups/lpadmin', 'NestedGroups']
+task = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+(out, err) = task.communicate()
+
+list = out.strip().split(" ")
+
+# Get the GUID of the desired group
+
+command = ['dscl', '/Local/Default', 'read', '/Groups/'+group, 'GeneratedUID']
+task = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+(out, err) = task.communicate()
+guid = out.strip().replace('GeneratedUID: ', '')
+
+# Iterate over all of the groups, if one of them is the specified group, we this part doesn't need to be installed.
+groupPresent = False
+for pos,item in enumerate(list):
+    if item != 'NestedGroups:':
+        if item == guid:
+            groupPresent = True
+
+# if groupPresent isn't True, then we don't need to uninstall!
+
+if groupPresent == True:
+    command = ['dscl', '/Local/Default', '-delete', '/Groups/lpadmin', 'NestedGroups', guid]
+    task = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    (out, err) = task.communicate()</string>
+</dict>
+</plist>
+
