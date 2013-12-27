@@ -48,6 +48,6 @@ for pos,item in enumerate(list):
 # if groupPresent isn't True, then we need to add the desired group to lpadmin
 
 if groupPresent != True:
-    command = ['dseditgroup', '-o', 'edit', '-n', '/Local/Default', '-a', group, '-t', 'group', 'lpadmin']
+    command = ['/usr/sbin/dseditgroup', '-o', 'edit', '-n', '/Local/Default', '-a', group, '-t', 'group', 'lpadmin']
     task = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     (out, err) = task.communicate()
