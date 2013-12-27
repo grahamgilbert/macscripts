@@ -11,7 +11,7 @@ group = 'admin'
 # Get the OS Version
 v = platform.mac_ver()[0][:4]
 
-command = ['security', 'authorizationdb', 'read', 'system.services.systemconfiguration.network']
+command = ['/usr/bin/security', 'authorizationdb', 'read', 'system.services.systemconfiguration.network']
 
 task = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 (out, err) = task.communicate()
@@ -24,7 +24,7 @@ if v == '10.9':
         # Convert back to plist
         input_plist = plistlib.writePlistToString(formatted)
         # Write the plist back to the authorizationdb
-        command = ['security', 'authorizationdb', 'write', 'system.services.systemconfiguration.network']
+        command = ['/usr/bin/security', 'authorizationdb', 'write', 'system.services.systemconfiguration.network']
         task = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         (out, err) = task.communicate(input=input_plist)
 
@@ -35,11 +35,11 @@ if v == '10.8':
         # Convert back to plist
         input_plist = plistlib.writePlistToString(formatted)
         # Write the plist back to the authorizationdb
-        command = ['security', 'authorizationdb', 'write', 'system.services.systemconfiguration.network']
+        command = ['/usr/bin/security', 'authorizationdb', 'write', 'system.services.systemconfiguration.network']
         task = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         (out, err) = task.communicate(input=input_plist) 
 
-command = ['security', 'authorizationdb', 'read', 'system.preferences.network']
+command = ['/usr/bin/security', 'authorizationdb', 'read', 'system.preferences.network']
 
 task = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 (out, err) = task.communicate()
@@ -51,6 +51,6 @@ if formatted['group'] != group:
     # Convert back to plist
     input_plist = plistlib.writePlistToString(formatted)
     # Write the plist back to the authorizationdb
-    command = ['security', 'authorizationdb', 'write', 'system.preferences.network']
+    command = ['/usr/bin/security', 'authorizationdb', 'write', 'system.preferences.network']
     task = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     (out, err) = task.communicate(input=input_plist)

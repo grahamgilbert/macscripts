@@ -7,7 +7,7 @@ import plistlib
 # Group System Preferences was be opened to
 group = 'everyone'
 
-command = ['security', 'authorizationdb', 'read', 'system.preferences.printing']
+command = ['/usr/bin/security', 'authorizationdb', 'read', 'system.preferences.printing']
 
 task = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 (out, err) = task.communicate()
@@ -21,13 +21,13 @@ if formatted['group'] != originalGroup:
     # Convert back to plist
     input_plist = plistlib.writePlistToString(formatted)
     # Write the plist back to the authorizationdb
-    command = ['security', 'authorizationdb', 'write', 'system.preferences.printing']
+    command = ['/usr/bin/security', 'authorizationdb', 'write', 'system.preferences.printing']
     task = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     (out, err) = task.communicate(input=input_plist)
     
 
 # Get all of the groups nested under lpadmin
-command = ['dscl', '/Local/Default', 'read', '/Groups/lpadmin', 'NestedGroups']
+command = ['/usr/bin/dscl', '/Local/Default', 'read', '/Groups/lpadmin', 'NestedGroups']
 task = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 (out, err) = task.communicate()
 
@@ -35,7 +35,7 @@ list = out.strip().split(" ")
 
 # Get the GUID of the desired group
 
-command = ['dscl', '/Local/Default', 'read', '/Groups/'+group, 'GeneratedUID']
+command = ['/usr/bin/dscl', '/Local/Default', 'read', '/Groups/'+group, 'GeneratedUID']
 task = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 (out, err) = task.communicate()
 guid = out.strip().replace('GeneratedUID: ', '')
@@ -50,6 +50,6 @@ for pos,item in enumerate(list):
 # if groupPresent isn't True, then we don't need to uninstall!
 
 if groupPresent == True:
-    command = ['dscl', '/Local/Default', '-delete', '/Groups/lpadmin', 'NestedGroups', guid]
+    command = ['/usr/bin/dscl', '/Local/Default', '-delete', '/Groups/lpadmin', 'NestedGroups', guid]
     task = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     (out, err) = task.communicate()

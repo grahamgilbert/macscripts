@@ -7,7 +7,7 @@ import plistlib
 # Group Date and Time  System Preferences should be opened to
 group = 'everyone'
 
-command = ['security', 'authorizationdb', 'read', 'system.preferences.datetime']
+command = ['/usr/bin/security', 'authorizationdb', 'read', 'system.preferences.datetime']
 
 task = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 (out, err) = task.communicate()

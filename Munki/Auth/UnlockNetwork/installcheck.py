@@ -11,14 +11,14 @@ group = 'everyone'
 # Get the OS Version
 v = platform.mac_ver()[0][:4]
 
-command = ['security', 'authorizationdb', 'read', 'system.preferences.network']
+command = ['/usr/bin/security', 'authorizationdb', 'read', 'system.preferences.network']
 
 task = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 (out, err) = task.communicate()
 
 formatted = plistlib.readPlistFromString(out)
 
-command = ['security', 'authorizationdb', 'read', 'system.services.systemconfiguration.network']
+command = ['/usr/bin/security', 'authorizationdb', 'read', 'system.services.systemconfiguration.network']
 
 task = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 (out, err) = task.communicate()

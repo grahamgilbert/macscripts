@@ -7,7 +7,7 @@ import plistlib
 # Group System Preferences should be opened to
 group = 'everyone'
 
-command = ['security', 'authorizationdb', 'read', 'system.preferences']
+command = ['/usr/bin/security', 'authorizationdb', 'read', 'system.preferences']
 
 task = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 (out, err) = task.communicate()
@@ -20,6 +20,6 @@ if formatted['group'] != group:
     # Convert back to plist
     input_plist = plistlib.writePlistToString(formatted)
     # Write the plist back to the authorizationdb
-    command = ['security', 'authorizationdb', 'write', 'system.preferences']
+    command = ['/usr/bin/security', 'authorizationdb', 'write', 'system.preferences']
     task = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     (out, err) = task.communicate(input=input_plist)

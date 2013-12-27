@@ -7,7 +7,7 @@ import plistlib
 # Group System Preferences should be opened to
 group = 'everyone'
 
-command = ['security', 'authorizationdb', 'read', 'system.preferences.energysaver']
+command = ['/usr/bin/security', 'authorizationdb', 'read', 'system.preferences.energysaver']
 
 task = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 (out, err) = task.communicate()
