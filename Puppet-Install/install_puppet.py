@@ -140,7 +140,7 @@ if internet_on:
     p.wait()
     time.sleep(20)
     print "Downloading Puppet"
-    the_dmg = downloadChunks("http://downloads.puppetlabs.com/mac/puppet-/usr/local/.dmg")
+    the_dmg = downloadChunks("http://downloads.puppetlabs.com/mac/puppet-3.4.2/puppet-3.4.2.dmg")
     ##mount the dmg
     print "Mounting Puppet DMG"
     the_command = "/usr/bin/hdiutil attach "+the_dmg
