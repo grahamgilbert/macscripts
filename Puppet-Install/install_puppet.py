@@ -97,29 +97,29 @@ if internet_on:
             myfile.write("192.168.33.10 puppet.grahamgilbert.dev")
     
     
-    import errno
-
-    def force_symlink(file1, file2):
-        try:
-            symlink(file1, file2)
-        except OSError, e:
-            if e.errno == errno.EEXIST:
-                # is it a directory? If not, remove the symlink
-                if path.islink(file2):
-                    unlink(file2)
-                else:
-                    rmtree(file2)
-                symlink(file1, file2)
-    # see if we're running 10.9
-    import platform
-    v, _, _ = platform.mac_ver()
-    v = float('.'.join(v.split('.')[:2]))
-    # if we are, check if the java dir is symlinked
-    print v
-    if v == 10.9:
-        print 'forcing symlink'
-        #if not path.islink('/usr/lib/ruby/site_ruby/1.8'):
-        force_symlink('/usr/lib/ruby/site_ruby/2.0.0', '/usr/lib/ruby/site_ruby/1.8')
+    # import errno
+    # 
+    # def force_symlink(file1, file2):
+    #     try:
+    #         symlink(file1, file2)
+    #     except OSError, e:
+    #         if e.errno == errno.EEXIST:
+    #             # is it a directory? If not, remove the symlink
+    #             if path.islink(file2):
+    #                 unlink(file2)
+    #             else:
+    #                 rmtree(file2)
+    #             symlink(file1, file2)
+    # # see if we're running 10.9
+    # import platform
+    # v, _, _ = platform.mac_ver()
+    # v = float('.'.join(v.split('.')[:2]))
+    # # if we are, check if the java dir is symlinked
+    # print v
+    # if v == 10.9:
+    #     print 'forcing symlink'
+    #     #if not path.islink('/usr/lib/ruby/site_ruby/1.8'):
+    #     force_symlink('/usr/lib/ruby/site_ruby/2.0.0', '/usr/lib/ruby/site_ruby/1.8')
     
     if path.isdir('/var/lib/puppet'):
         print "Binning old Puppet installation"
@@ -127,7 +127,7 @@ if internet_on:
     if path.isdir('/etc/puppet'):
         rmtree('/etc/puppet')
     print "Downloading Facter"
-    the_dmg = downloadChunks("http://downloads.puppetlabs.com/mac/facter-1.7.4.dmg")
+    the_dmg = downloadChunks("http://downloads.puppetlabs.com/mac/facter-1.7.5.dmg")
     print "Mounting Facter DMG"
     the_command = "/usr/bin/hdiutil attach "+the_dmg
     p=subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
@@ -135,7 +135,7 @@ if internet_on:
     time.sleep(10)
     #install it
     print "Installing Facter"
-    the_command = "/usr/sbin/installer -pkg /Volumes/facter-1.7.4/facter-1.7.4.pkg -target /"
+    the_command = "/usr/sbin/installer -pkg /Volumes/facter-1.7.5/facter-1.7.5.pkg -target /"
     p=subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     p.wait()
     time.sleep(20)
@@ -157,7 +157,7 @@ if internet_on:
     subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
     
     print "Ejecting Facter"
-    the_command = "hdiutil eject /Volumes/facter-1.7.4"
+    the_command = "hdiutil eject /Volumes/facter-1.7.5"
     subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
     
     data = "[main]\nlogdir=/var/log/puppet\nvardir=/var/lib/puppet\nssldir=/var/lib/puppet/ssl\n#rundir=/var/run/puppet\nfactpath=$vardir/lib/facter\ntemplatedir=$confdir/templates\n\n[master]\n# These are needed when the puppetmaster is run by passenger\n# and can safely be removed if webrick is used.\nssl_client_header = SSL_CLIENT_S_DN \nssl_client_verify_header = SSL_CLIENT_VERIFY\n\n[agent]\nserver="+puppetserver+"\ncertname="+certname+"\nreport=true\npluginsync=true"
