@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>autoremove</key>
+    <false/>
+    <key>catalogs</key>
+    <array>
+        <string>production</string>
+    </array>
+    <key>description</key>
+    <string>Removes the JAMF Framework</string>
+    <key>display_name</key>
+    <string>Removes the JAMF Framework</string>
+    <key>name</key>
+    <string>BinJAMF</string>
+    <key>installer_type</key>
+    <string>nopkg</string>
+    <key>minimum_os_version</key>
+    <string>10.6.0</string>
+    <key>unattended_install</key>
+    <true/>
+    <key>version</key>
+    <string>1.0</string> 
+    <key>uninstallable</key>
+    <true/> 
+	<key>installcheck_script</key>
+	<string>#!/bin/bash
+file="/usr/sbin/jamf"
+if [ -f "$file" ]
+then
+	exit 0
+else
+	exit 1
+fi</string>
+	<key>postinstall_script</key>
+	<string>#!/bin/sh
+/usr/sbin/jamf -removeFramework
+
+# We configured without profiles with Casper, so clean up here
+rm /Library/Preferences/ManagedInstalls.plist</string>
+</dict>
+</plist>
+
