@@ -56,6 +56,9 @@ echo "The mac doesn't have a name, exiting."
   exit 1
 fi
 
+# AD can only use a 15 character name
+COMPUTER_ID=`echo ${COMPUTER_ID} | cut -c1-15`
+
 #
 # Wait for network services to be initialized
 #
