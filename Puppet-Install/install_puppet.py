@@ -65,13 +65,13 @@ def internet_on():
         return True
     except urllib2.URLError as err: pass
     return False
-    
+
 if internet_on:
     if args['certname']:
         certname = args['certname']
     else:
         certname = 'client.grahamgilbert.dev'
-        
+
     if args['serial']:
         the_command = "ioreg -c \"IOPlatformExpertDevice\" | awk -F '\"' '/IOPlatformSerialNumber/ {print $4}'"
         serial = subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
@@ -80,7 +80,7 @@ if internet_on:
         serial = serial.replace("+", "")
         serial = serial.replace("/", "")
         certname = serial.lower()
-        
+
     if args['clean_serial']:
         the_command = "ioreg -c \"IOPlatformExpertDevice\" | awk -F '\"' '/IOPlatformSerialNumber/ {print $4}'"
         serial = subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
@@ -91,14 +91,14 @@ if internet_on:
         if serial[0].isdigit():
             serial = "aaa"+serial
         certname = serial.lower()
-    
+
     if args['appendhosts']:
         with open("/etc/hosts", "a") as myfile:
             myfile.write("192.168.33.10 puppet.grahamgilbert.dev")
-    
-    
+
+
     # import errno
-    # 
+    #
     # def force_symlink(file1, file2):
     #     try:
     #         symlink(file1, file2)
@@ -120,7 +120,7 @@ if internet_on:
     #     print 'forcing symlink'
     #     #if not path.islink('/usr/lib/ruby/site_ruby/1.8'):
     #     force_symlink('/usr/lib/ruby/site_ruby/2.0.0', '/usr/lib/ruby/site_ruby/1.8')
-    
+
     if path.isdir('/var/lib/puppet'):
         print "Binning old Puppet installation"
         rmtree('/var/lib/puppet')
@@ -155,18 +155,18 @@ if internet_on:
     print "Ejecting Puppet"
     the_command = "hdiutil eject /Volumes/puppet-3.4.3"
     subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
-    
+
     print "Ejecting Facter"
     the_command = "hdiutil eject /Volumes/facter-2.0.1"
     subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
-    
-    data = "[main]\nlogdir=/var/log/puppet\nvardir=/var/lib/puppet\nssldir=/var/lib/puppet/ssl\n#rundir=/var/run/puppet\nfactpath=$vardir/lib/facter\ntemplatedir=$confdir/templates\n\n[master]\n# These are needed when the puppetmaster is run by passenger\n# and can safely be removed if webrick is used.\nssl_client_header = SSL_CLIENT_S_DN \nssl_client_verify_header = SSL_CLIENT_VERIFY\n\n[agent]\nserver="+puppetserver+"\ncertname="+certname+"\nreport=true\npluginsync=true"
+
+    data = "[main]\nlogdir=/var/log/puppet\npluginsync=true\nvardir=/var/lib/puppet\nssldir=/var/lib/puppet/ssl\n#rundir=/var/run/puppet\nfactpath=$vardir/lib/facter\ntemplatedir=$confdir/templates\n\n[master]\n# These are needed when the puppetmaster is run by passenger\n# and can safely be removed if webrick is used.\nssl_client_header = SSL_CLIENT_S_DN \nssl_client_verify_header = SSL_CLIENT_VERIFY\n\n[agent]\nserver="+puppetserver+"\ncertname="+certname+"\nreport=true\npluginsync=true"
     the_command = "/usr/bin/touch /etc/puppet/puppet.conf"
     p=subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-    
+
     print "writing the puppet configuration"
     file = open("/etc/puppet/puppet.conf", "w")
     file.write(data)
     file.close()
-    
+
     print "All done!"
