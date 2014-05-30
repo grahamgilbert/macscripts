@@ -29,3 +29,5 @@ if [ $? -eq 0 ]; then
     $DEFAULTS write "${COND_DOMAIN}" "${CONDITION_NAME}" -array-add "10.8"
     $DEFAULTS write "${COND_DOMAIN}" "${CONDITION_NAME}" -array-add "10.9"
 fi
+
+plutil -convert xml1 "$COND_DOMAIN".plist
