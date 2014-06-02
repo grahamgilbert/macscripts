@@ -126,6 +126,19 @@ if internet_on:
         rmtree('/var/lib/puppet')
     if path.isdir('/etc/puppet'):
         rmtree('/etc/puppet')
+    print "Downloading Hiera"
+    the_dmg = downloadChunks("http://downloads.puppetlabs.com/mac/hiera-1.3.3.dmg")
+    print "Mounting Hiera DMG"
+    the_command = "/usr/bin/hdiutil attach "+the_dmg
+    p=subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p.wait()
+    time.sleep(10)
+    #install it
+    print "Installing Hiera"
+    the_command = "/usr/sbin/installer -pkg /Volumes/hiera-1.3.3/hiera-1.3.3.pkg -target /"
+    p=subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p.wait()
+    time.sleep(20)
     print "Downloading Facter"
     the_dmg = downloadChunks("http://downloads.puppetlabs.com/mac/facter-2.0.1.dmg")
     print "Mounting Facter DMG"
@@ -158,6 +171,10 @@ if internet_on:
 
     print "Ejecting Facter"
     the_command = "hdiutil eject /Volumes/facter-2.0.1"
+    subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
+
+    print "Ejecting Hiera"
+    the_command = "hdiutil eject /Volumes/hiera-1.3.3"
     subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
 
     data = "[main]\nlogdir=/var/log/puppet\npluginsync=true\nvardir=/var/lib/puppet\nssldir=/var/lib/puppet/ssl\n#rundir=/var/run/puppet\nfactpath=$vardir/lib/facter\ntemplatedir=$confdir/templates\n\n[master]\n# These are needed when the puppetmaster is run by passenger\n# and can safely be removed if webrick is used.\nssl_client_header = SSL_CLIENT_S_DN \nssl_client_verify_header = SSL_CLIENT_VERIFY\n\n[agent]\nserver="+puppetserver+"\ncertname="+certname+"\nreport=true\npluginsync=true"
