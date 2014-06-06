@@ -17,6 +17,15 @@ overrides_dir="${user_home_dir}/src/autopkg-overrides"
 
 recipe_list="${overrides_dir}/recipelist.txt"
 
+repo_list="${overrides_dir}/repolist.txt"
+
+function update_repos {
+    while IFS= read -r line
+    do
+        /usr/local/bin/autopkg repo-add $line
+    done < $repo_list
+}
+
 # run autopkg
 if [ "${1}" == "help" ]; then
   # show some help with regards to initialization option
@@ -37,6 +46,7 @@ elif [ "${1}" == "initialize" ]; then
   if [ ! -d "${user_home_dir}"/Documents/autopkg ]; then
     /bin/mkdir -p "${user_home_dir}"/Documents/autopkg
   fi
+  update_repos
   /usr/local/bin/autopkg repo-update all
   /usr/bin/git -C ${overrides_dir} pull
   # run autopkg twice, once to get any updates and the second to get a log indicating nothing changed
@@ -58,6 +68,7 @@ elif [ ! -f "${user_home_dir}"/Documents/autopkg/autopkg.out ]; then
 else
   # default is to just run autopkg and email log if something changed from normal
   $logger "starting autopkg"
+  update_repos
   /usr/local/bin/autopkg repo-update all
   /usr/bin/git -C ${overrides_dir} pull
   /usr/local/bin/autopkg run -l ${recipe_list} --override-dir=${overrides_dir} 2>&1 > /tmp/autopkg.out
