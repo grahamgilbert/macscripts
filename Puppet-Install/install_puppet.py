@@ -110,16 +110,16 @@ if internet_on:
     #             else:
     #                 rmtree(file2)
     #             symlink(file1, file2)
-    # # see if we're running 10.9
-    # import platform
-    # v, _, _ = platform.mac_ver()
-    # v = float('.'.join(v.split('.')[:2]))
-    # # if we are, check if the java dir is symlinked
-    # print v
-    # if v == 10.9:
-    #     print 'forcing symlink'
-    #     #if not path.islink('/usr/lib/ruby/site_ruby/1.8'):
-    #     force_symlink('/usr/lib/ruby/site_ruby/2.0.0', '/usr/lib/ruby/site_ruby/1.8')
+    # see if we're running 10.9
+    import platform
+    v, _, _ = platform.mac_ver()
+    v = float('.'.join(v.split('.')[:2]))
+    # if we are, check if the java dir is symlinked
+    print v
+    if v == 10.8:
+        print 'Installing json_pure gem'
+        p=subprocess.Popen('/usr/bin/gem', 'install', 'json_pure',shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        p.wait()
 
     if path.isdir('/var/lib/puppet'):
         print "Binning old Puppet installation"
