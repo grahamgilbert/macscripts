@@ -118,7 +118,8 @@ if internet_on:
     print v
     if v == 10.8:
         print 'Installing json_pure gem'
-        p=subprocess.Popen('/usr/bin/gem', 'install', 'json_pure',shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        the_command = '/usr/bin/gem install json_pure'
+        p=subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
         p.wait()
 
     if path.isdir('/var/lib/puppet'):
