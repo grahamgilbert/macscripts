@@ -15,7 +15,11 @@ user_home_dir=`dscl . -read /Users/${autopkg_user} NFSHomeDirectory | awk '{ pri
 
 overrides_dir="${user_home_dir}/src/autopkg-overrides"
 
-recipe_list="${overrides_dir}/recipelist.txt"
+recipe_list="${overrides_dir}/combined_list.txt"
+
+work_list="${overrides_dir}/recipelist.txt"
+
+personal_list="${overrides_dir}/personal-recipes.txt"
 
 repo_list="${overrides_dir}/repolist.txt"
 
@@ -24,6 +28,11 @@ function update_repos {
     do
         /usr/local/bin/autopkg repo-add $line
     done < $repo_list
+}
+
+function merge_recipe_lists {
+    cat ${personal_list} > ${recipe_list}
+    cat ${work_list} >> ${recipe_list}
 }
 
 # run autopkg
@@ -41,14 +50,14 @@ elif [ "${1}" == "initialize" ]; then
   echo "autopkg user: ${autopkg_user}"
   echo "user home dir: ${user_home_dir}"
   echo "overrides directory: ${overrides_dir}"
-
+  /usr/bin/git -C ${overrides_dir} pull
+  merge_recipe_lists
   # make sure autopkg folder exists in autopkg_user's Documents folder
   if [ ! -d "${user_home_dir}"/Documents/autopkg ]; then
     /bin/mkdir -p "${user_home_dir}"/Documents/autopkg
   fi
   update_repos
   /usr/local/bin/autopkg repo-update all
-  /usr/bin/git -C ${overrides_dir} pull
   # run autopkg twice, once to get any updates and the second to get a log indicating nothing changed
   $logger "autopkg initial run to temporary log location"
   echo "for this autopkg run, output will be shown"
@@ -68,9 +77,10 @@ elif [ ! -f "${user_home_dir}"/Documents/autopkg/autopkg.out ]; then
 else
   # default is to just run autopkg and email log if something changed from normal
   $logger "starting autopkg"
+  /usr/bin/git -C ${overrides_dir} pull
   update_repos
   /usr/local/bin/autopkg repo-update all
-  /usr/bin/git -C ${overrides_dir} pull
+  merge_recipe_lists
   /usr/local/bin/autopkg run -l ${recipe_list} --override-dir=${overrides_dir} 2>&1 > /tmp/autopkg.out
 
   $logger "finished autopkg"
