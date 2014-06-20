@@ -208,4 +208,7 @@ if internet_on:
 
     the_command = "chmod 777 /var/lib/puppet"
     subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
+
+    the_command = "puppet resource group puppet ensure=present"
+    subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]    
     print "All done!"
