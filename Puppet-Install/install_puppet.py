@@ -161,7 +161,7 @@ if internet_on:
     p.wait()
     time.sleep(20)
     print "Downloading Puppet"
-    the_dmg = downloadChunks("http://downloads.puppetlabs.com/mac/puppet-3.6.2.dmg")
+    the_dmg = downloadChunks("http://downloads.puppetlabs.com/mac/puppet-3.3.2.dmg")
     ##mount the dmg
     print "Mounting Puppet DMG"
     the_command = "/usr/bin/hdiutil attach "+the_dmg
@@ -169,12 +169,12 @@ if internet_on:
     p.wait()
     time.sleep(10)
     print "Installing Puppet"
-    the_command = "/usr/sbin/installer -pkg /Volumes/puppet-3.6.2/puppet-3.6.2.pkg -target /"
+    the_command = "/usr/sbin/installer -pkg /Volumes/puppet-3.3.2/puppet-3.3.2.pkg -target /"
     p=subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     p.wait()
     time.sleep(20)
     print "Ejecting Puppet"
-    the_command = "hdiutil eject /Volumes/puppet-3.6.2"
+    the_command = "hdiutil eject /Volumes/puppet-3.3.2"
     subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
 
     print "Ejecting Facter"
