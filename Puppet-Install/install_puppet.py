@@ -3,7 +3,7 @@
 import urllib2
 from tempfile import mkstemp
 from shutil import move, rmtree
-from os import remove, close, path, rename, umask, symlink, unlink
+from os import remove, close, path, rename, umask, symlink, unlink, walk, chown
 import subprocess
 import math
 import time
@@ -186,5 +186,14 @@ if internet_on:
     file = open("/etc/puppet/puppet.conf", "w")
     file.write(data)
     file.close()
+
+    print "Setting Permissions"
+    import os  
+    path = "/var/lib/puppet"  
+    for root, dirs, files in os.walk(path):  
+        for momo in dirs:  
+            os.chown(os.path.join(root, momo), 0, 0)
+        for momo in files:
+            os.chown(os.path.join(root, momo), 0, 0)
 
     print "All done!"
