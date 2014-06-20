@@ -67,13 +67,10 @@ def internet_on():
     return False
 
 def chown_r(path):
-    for root, dirs, files in walk(path):  
-        for momo in dirs:  
-            chown(path.join(root, momo), 0, 0)
-            chmod(path.join(root, momo), 0o777)
-        for momo in files:
-            chown(path.join(root, momo), 0, 0)
-            chmod(path.joiin(root, momo), 0o777)
+    the_command = "chown -R root:wheel "+path
+    serial = subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
+    the_command = "chmod -R 777 "+path
+    serial = subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
 
 if internet_on:
     if args['certname']:
