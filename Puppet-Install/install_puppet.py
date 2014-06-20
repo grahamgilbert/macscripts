@@ -210,5 +210,8 @@ if internet_on:
     subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
 
     the_command = "puppet resource group puppet ensure=present"
+    subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
+
+    the_command = "puppet resource file /etc/puppet/ssl ensure=present mode=0775"
     subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]    
     print "All done!"
