@@ -194,8 +194,12 @@ if internet_on:
     file.write(data)
     file.close()
 
-    print "Setting Permissions"
-    chown_r("/var/lib/puppet")
-    chown_r("/var/lib/facter")
+    # print "Setting Permissions"
+    # chown_r("/var/lib/puppet")
+    # chown_r("/var/lib/facter")
+
+    print 'Correcting the permissions Facter messes up'
+    the_command = "chown root:wheel /var/lib"
+    subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
 
     print "All done!"
