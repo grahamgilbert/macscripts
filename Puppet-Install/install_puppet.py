@@ -128,7 +128,7 @@ if internet_on:
     if path.isdir('/etc/puppet'):
         rmtree('/etc/puppet')
     print "Downloading Hiera"
-    the_dmg = downloadChunks("http://downloads.puppetlabs.com/mac/hiera-1.3.3.dmg")
+    the_dmg = downloadChunks("http://downloads.puppetlabs.com/mac/hiera-1.3.4.dmg")
     print "Mounting Hiera DMG"
     the_command = "/usr/bin/hdiutil attach "+the_dmg
     p=subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
@@ -136,12 +136,12 @@ if internet_on:
     time.sleep(10)
     #install it
     print "Installing Hiera"
-    the_command = "/usr/sbin/installer -pkg /Volumes/hiera-1.3.3/hiera-1.3.3.pkg -target /"
+    the_command = "/usr/sbin/installer -pkg /Volumes/hiera-1.3.4/hiera-1.3.4.pkg -target /"
     p=subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     p.wait()
     time.sleep(20)
     print "Downloading Facter"
-    the_dmg = downloadChunks("http://downloads.puppetlabs.com/mac/facter-2.0.1.dmg")
+    the_dmg = downloadChunks("http://downloads.puppetlabs.com/mac/facter-2.0.2.dmg")
     print "Mounting Facter DMG"
     the_command = "/usr/bin/hdiutil attach "+the_dmg
     p=subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
@@ -149,7 +149,7 @@ if internet_on:
     time.sleep(10)
     #install it
     print "Installing Facter"
-    the_command = "/usr/sbin/installer -pkg /Volumes/facter-2.0.1/facter-2.0.1.pkg -target /"
+    the_command = "/usr/sbin/installer -pkg /Volumes/facter-2.0.2/facter-2.0.2.pkg -target /"
     p=subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     p.wait()
     time.sleep(20)
@@ -171,14 +171,14 @@ if internet_on:
     subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
 
     print "Ejecting Facter"
-    the_command = "hdiutil eject /Volumes/facter-2.0.1"
+    the_command = "hdiutil eject /Volumes/facter-2.0.2"
     subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
 
     print "Ejecting Hiera"
-    the_command = "hdiutil eject /Volumes/hiera-1.3.3"
+    the_command = "hdiutil eject /Volumes/hiera-1.3.4"
     subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
 
-    data = "[main]\nlogdir=/var/log/puppet\npluginsync=true\nvardir=/var/lib/puppet\nssldir=/var/lib/puppet/ssl\n#rundir=/var/run/puppet\nfactpath=$vardir/lib/facter\ntemplatedir=$confdir/templates\n\n[master]\n# These are needed when the puppetmaster is run by passenger\n# and can safely be removed if webrick is used.\nssl_client_header = SSL_CLIENT_S_DN \nssl_client_verify_header = SSL_CLIENT_VERIFY\npluginsync=true\n\n[agent]\nserver="+puppetserver+"\ncertname="+certname+"\nreport=true\npluginsync=true"
+    data = "[main]\nlogdir=/var/log/puppet\npluginsync=true\nvardir=/var/lib/puppet\nssldir=/var/lib/puppet/ssl\n#rundir=/var/run/puppet\nfactpath=$vardir/lib/facter\n\n[master]\n# These are needed when the puppetmaster is run by passenger\n# and can safely be removed if webrick is used.\nssl_client_header = SSL_CLIENT_S_DN \nssl_client_verify_header = SSL_CLIENT_VERIFY\npluginsync=true\n\n[agent]\nserver="+puppetserver+"\ncertname="+certname+"\nreport=true\npluginsync=true"
     the_command = "/usr/bin/touch /etc/puppet/puppet.conf"
     p=subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
