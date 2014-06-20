@@ -178,7 +178,7 @@ if internet_on:
     the_command = "hdiutil eject /Volumes/hiera-1.3.4"
     subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
 
-    data = "[main]\nlogdir=/var/log/puppet\npluginsync=true\nvardir=/var/lib/puppet\nssldir=/var/lib/puppet/ssl\n#rundir=/var/run/puppet\nfactpath=$vardir/lib/facter\n\n[master]\n# These are needed when the puppetmaster is run by passenger\n# and can safely be removed if webrick is used.\nssl_client_header = SSL_CLIENT_S_DN \nssl_client_verify_header = SSL_CLIENT_VERIFY\npluginsync=true\n\n[agent]\nserver="+puppetserver+"\ncertname="+certname+"\nreport=true\npluginsync=true"
+    data = "[main]\npluginsync=true\n\n[master]\n# These are needed when the puppetmaster is run by passenger\n# and can safely be removed if webrick is used.\nssl_client_header = SSL_CLIENT_S_DN \nssl_client_verify_header = SSL_CLIENT_VERIFY\npluginsync=true\n\n[agent]\nserver="+puppetserver+"\ncertname="+certname+"\nreport=true\npluginsync=true"
     the_command = "/usr/bin/touch /etc/puppet/puppet.conf"
     p=subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
