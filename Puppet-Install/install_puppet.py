@@ -68,12 +68,12 @@ def internet_on():
 
 def chown_r(path):
     for root, dirs, files in walk(path):  
-    for momo in dirs:  
-        chown(path.join(root, momo), 0, 0)
-        chmod(path.join(root, momo), 0o777)
-    for momo in files:
-        chown(path.join(root, momo), 0, 0)
-        chmod(path.joiin(root, momo), 0o777)
+        for momo in dirs:  
+            chown(path.join(root, momo), 0, 0)
+            chmod(path.join(root, momo), 0o777)
+        for momo in files:
+            chown(path.join(root, momo), 0, 0)
+            chmod(path.joiin(root, momo), 0o777)
 
 if internet_on:
     if args['certname']:
