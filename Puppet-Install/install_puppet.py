@@ -3,7 +3,7 @@
 import urllib2
 from tempfile import mkstemp
 from shutil import move, rmtree
-from os import remove, close, path, rename, umask, symlink, unlink, walk, chown, chmod
+from os import remove, close, path, rename, umask, symlink, unlink, walk, makedirs
 import subprocess
 import math
 import time
@@ -67,6 +67,7 @@ def internet_on():
     return False
 
 def chown_r(path):
+    makedirs(path)
     the_command = "chown -R root:wheel "+path
     serial = subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
     the_command = "chmod -R 777 "+path
