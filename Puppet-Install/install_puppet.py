@@ -3,7 +3,7 @@
 import urllib2
 from tempfile import mkstemp
 from shutil import move, rmtree
-from os import remove, close, path, rename, umask, symlink, unlink, walk, chown
+from os import remove, close, path, rename, umask, symlink, unlink, walk, chown, chmod
 import subprocess
 import math
 import time
@@ -65,6 +65,15 @@ def internet_on():
         return True
     except urllib2.URLError as err: pass
     return False
+
+def chown_r(path):
+    for root, dirs, files in walk(path):  
+    for momo in dirs:  
+        chown(path.join(root, momo), 0, 0)
+        chmod(path.join(root, momo), 0o777)
+    for momo in files:
+        chown(path.join(root, momo), 0, 0)
+        chmod(path.joiin(root, momo), 0o777)
 
 if internet_on:
     if args['certname']:
@@ -188,12 +197,7 @@ if internet_on:
     file.close()
 
     print "Setting Permissions"
-    import os  
-    path = "/var/lib/puppet"  
-    for root, dirs, files in os.walk(path):  
-        for momo in dirs:  
-            os.chown(os.path.join(root, momo), 0, 0)
-        for momo in files:
-            os.chown(os.path.join(root, momo), 0, 0)
+    chown_r("/var/lib/puppet")
+    chown_r("/var/lib/facter")
 
     print "All done!"
