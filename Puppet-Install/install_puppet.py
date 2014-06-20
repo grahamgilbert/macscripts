@@ -202,4 +202,7 @@ if internet_on:
     the_command = "chown root:wheel /var/lib"
     subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
 
+    print 'Repairing permissions'
+    the_command = "diskutil repairPermissions /"
+    subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
     print "All done!"
