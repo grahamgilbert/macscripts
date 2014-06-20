@@ -161,7 +161,7 @@ if internet_on:
     p.wait()
     time.sleep(20)
     print "Downloading Puppet"
-    the_dmg = downloadChunks("http://downloads.puppetlabs.com/mac/puppet-3.6.2.dmg")
+    the_dmg = downloadChunks("http://downloads.puppetlabs.com/mac/puppet-3.4.1.dmg")
     ##mount the dmg
     print "Mounting Puppet DMG"
     the_command = "/usr/bin/hdiutil attach "+the_dmg
@@ -169,12 +169,12 @@ if internet_on:
     p.wait()
     time.sleep(10)
     print "Installing Puppet"
-    the_command = "/usr/sbin/installer -pkg /Volumes/puppet-3.6.2/puppet-3.6.2.pkg -target /"
+    the_command = "/usr/sbin/installer -pkg /Volumes/puppet-3.4.1/puppet-3.4.1.pkg -target /"
     p=subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     p.wait()
     time.sleep(20)
     print "Ejecting Puppet"
-    the_command = "hdiutil eject /Volumes/puppet-3.6.2"
+    the_command = "hdiutil eject /Volumes/puppet-3.4.1"
     subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
 
     print "Ejecting Facter"
@@ -198,23 +198,23 @@ if internet_on:
     # chown_r("/var/lib/puppet")
     # chown_r("/var/lib/facter")
 
-    print 'Correcting the permissions Facter messes up'
-    the_command = "chown root:wheel /var/lib"
-    subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
+    # print 'Correcting the permissions Facter messes up'
+    # the_command = "chown root:wheel /var/lib"
+    # subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
 
-    print 'Repairing permissions'
-    the_command = "mkdir /var/lib/puppet"
-    subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
+    # print 'Repairing permissions'
+    # the_command = "mkdir /var/lib/puppet"
+    # subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
 
-    the_command = "chmod 777 /var/lib/puppet"
-    subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
+    # the_command = "chmod 777 /var/lib/puppet"
+    # subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
 
-    the_command = "chmod 777 /etc/puppet"
-    subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
+    # the_command = "chmod 777 /etc/puppet"
+    # subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
 
-    the_command = "puppet resource group puppet ensure=present"
-    subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
+    # the_command = "puppet resource group puppet ensure=present"
+    # subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
 
-    the_command = "puppet resource file /etc/puppet/ssl ensure=present mode=0775"
-    subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]    
+    # the_command = "puppet resource file /etc/puppet/ssl ensure=present mode=0775"
+    # subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]    
     print "All done!"
