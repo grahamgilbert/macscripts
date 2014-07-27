@@ -37,7 +37,7 @@ if [ "$CURRENT_USER" == 'root' ]; then
     exit 1
 fi
 
-#download and install zsh
+#download and install formulae
 su $CURRENT_USER -c "/usr/local/bin/brew tap timsutton/formulae; /usr/local/bin/brew update"</string>
 	<key>unattended_install</key>
 	<true/>
