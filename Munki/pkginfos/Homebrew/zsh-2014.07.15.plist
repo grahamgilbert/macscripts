@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>_metadata</key>
+	<dict>
+		<key>created_by</key>
+		<string>grahamgilbert</string>
+		<key>creation_date</key>
+		<date>2014-07-15T15:59:10Z</date>
+		<key>munki_version</key>
+		<string>2.0.0.2091</string>
+		<key>os_version</key>
+		<string>10.9.4</string>
+	</dict>
+	<key>autoremove</key>
+	<false/>
+	<key>catalogs</key>
+	<array>
+		<string>production</string>
+	</array>
+	<key>description</key>
+	<string>Installs ZSH</string>
+	<key>installer_type</key>
+	<string>nopkg</string>
+	<key>minimum_os_version</key>
+	<string>10.9</string>
+	<key>name</key>
+	<string>zsh</string>
+	<key>postinstall_script</key>
+	<string>#!/bin/bash
+
+CURRENT_USER=`/bin/ls -l /dev/console | /usr/bin/awk '{ print $3 }'`
+
+if [ "$CURRENT_USER" == 'root' ]; then
+    # this can't run at the login window, we need the current user
+    exit 1
+fi
+
+#download and install zsh
+su $CURRENT_USER -c "/usr/local/bin/brew install zsh"</string>
+	<key>unattended_install</key>
+	<true/>
+	<key>unattended_uninstall</key>
+	<true/>
+	<key>version</key>
+	<string>2014.7.15</string>
+	<key>installs</key>
+	<array>
+		<dict>
+			<key>path</key>
+			<string>/usr/local/homebrew/Cellar/zsh</string>
+			<key>type</key>
+			<string>file</string>
+		</dict>
+	</array>
+	<key>requires</key>
+	<array>
+		<string>homebrew</string>
+	</array>
+</dict>
+</plist>
+

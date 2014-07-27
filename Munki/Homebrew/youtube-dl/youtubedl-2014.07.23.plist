@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>_metadata</key>
+	<dict>
+		<key>created_by</key>
+		<string>grahamgilbert</string>
+		<key>creation_date</key>
+		<date>2014-07-15T15:59:10Z</date>
+		<key>munki_version</key>
+		<string>2.0.0.2091</string>
+		<key>os_version</key>
+		<string>10.9.4</string>
+	</dict>
+	<key>autoremove</key>
+	<false/>
+	<key>catalogs</key>
+	<array>
+		<string>production</string>
+	</array>
+	<key>description</key>
+	<string>Installs youtube-dl</string>
+	<key>installer_type</key>
+	<string>nopkg</string>
+	<key>minimum_os_version</key>
+	<string>10.9</string>
+	<key>name</key>
+	<string>youtubedl</string>
+	<key>postinstall_script</key>
+	<string>#!/bin/bash
+
+CURRENT_USER=`/bin/ls -l /dev/console | /usr/bin/awk '{ print $3 }'`
+
+if [ "$CURRENT_USER" == 'root' ]; then
+    # this can't run at the login window, we need the current user
+    exit 1
+fi
+
+chown $CURRENT_USER /usr/local
+mkdir -p /usr/local/etc
+chown $CURRENT_USER /usr/local/etc
+mkdir -p /usr/local/bin
+chown -R $CURRENT_USER /usr/local/bin
+mkdir -p /usr/local/share/man
+chown -R $CURRENT_USER /usr/local/share/man
+
+#download and install youtube-dl
+su $CURRENT_USER -c "/usr/local/bin/brew install youtube-dl"
+</string>
+	<key>unattended_install</key>
+	<true/>
+	<key>unattended_uninstall</key>
+	<true/>
+	<key>version</key>
+	<string>2014.7.23</string>
+	<key>installs</key>
+    <array>
+        <dict>
+            <key>path</key>
+            <string>/usr/local/bin/youtube-dl</string>
+            <key>type</key>
+            <string>file</string>
+        </dict>
+    </array>
+	<key>requires</key>
+	<array>
+		<string>homebrew</string>
+	</array>
+</dict>
+</plist>
+
