@@ -7,5 +7,5 @@ if [ "$CURRENT_USER" == 'root' ]; then
     exit 1
 fi
 
-#download and install zsh
+#download and install binarytap
 su $CURRENT_USER -c "/usr/local/bin/brew tap homebrew/binary; /usr/local/bin/brew update"

@@ -39,7 +39,7 @@ fi
 
 chown $CURRENT_USER /usr/local
 
-#download and install zsh
+#download and install packer
 su $CURRENT_USER -c "/usr/local/bin/brew install packer"
 
 su $CURRENT_USER -c "/usr/local/bin/brew link packer"</string>
