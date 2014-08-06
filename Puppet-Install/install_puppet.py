@@ -111,26 +111,11 @@ if internet_on:
         with open("/etc/hosts", "a") as myfile:
             myfile.write("192.168.33.10 puppet.grahamgilbert.dev")
 
-
-    # import errno
-    #
-    # def force_symlink(file1, file2):
-    #     try:
-    #         symlink(file1, file2)
-    #     except OSError, e:
-    #         if e.errno == errno.EEXIST:
-    #             # is it a directory? If not, remove the symlink
-    #             if path.islink(file2):
-    #                 unlink(file2)
-    #             else:
-    #                 rmtree(file2)
-    #             symlink(file1, file2)
-    # see if we're running 10.9
     import platform
     v, _, _ = platform.mac_ver()
     v = float('.'.join(v.split('.')[:2]))
-    # if we are, check if the java dir is symlinked
     print v
+    # 10.8 needs json_pure instaling now. Harrumph.
     if v == 10.8:
         print 'Installing json_pure gem'
         the_command = '/usr/bin/gem install json_pure'
@@ -208,28 +193,5 @@ if internet_on:
     file = open("/etc/puppet/puppet.conf", "w")
     file.write(data)
     file.close()
-
-    # print "Setting Permissions"
-    # chown_r("/var/lib/puppet")
-    # chown_r("/var/lib/facter")
-
-    # print 'Correcting the permissions Facter messes up'
-    # the_command = "chown root:wheel /var/lib"
-    # subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
-
-    # print 'Repairing permissions'
-    # the_command = "mkdir /var/lib/puppet"
-    # subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
-
-    # the_command = "chmod 777 /var/lib/puppet"
-    # subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
-
-    # the_command = "chmod 777 /etc/puppet"
-    # subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
-
-    # the_command = "puppet resource group puppet ensure=present"
-    # subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]
-
-    # the_command = "puppet resource file /etc/puppet/ssl ensure=present mode=0775"
-    # subprocess.Popen(the_command,shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE).communicate()[0]    
+ 
     print "All done!"
