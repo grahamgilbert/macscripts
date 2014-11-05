@@ -18,7 +18,7 @@ task = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 formatted = plistlib.readPlistFromString(out)
 
 # If we're on 10.9 and the group doesn't match, we're going to correct it.
-if v == '10.9':
+if v == '10.9' or v == '10.10':
     if formatted['group'] != group:
         formatted['group'] = group
         # Convert back to plist

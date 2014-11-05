@@ -27,7 +27,7 @@ formatted2 = plistlib.readPlistFromString(out)
 
 # Need to check the group for 10.9, and the rule for 10.8
 # if group matches for both rights, exit 1 as we don't need to install
-if v == '10.9':    
+if v == '10.9' or v == '10.10':    
     if formatted['group'] == group and formatted2['group'] == group:
         sys.exit(1)
     else:
