@@ -1,15 +1,20 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 
 import subprocess
 import sys
 import plistlib
-import platform
 
 # Group System Preferences should be opened to
 group = 'admin'
 
 # Get the OS Version
-v = platform.mac_ver()[0][:4]
+command = ['/usr/bin/sw_vers', '-productVersion']
+task = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+(out, err) = task.communicate()
+
+groups = out.split('.')
+
+v = groups[0].strip() + '.' + groups[1].strip()
 
 command = ['/usr/bin/security', 'authorizationdb', 'read', 'system.services.systemconfiguration.network']
 

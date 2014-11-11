@@ -1,5 +1,0 @@
-#!/bin/sh
-
-/usr/bin/touch "$3/Users/Shared/.com.googlecode.munki.checkandinstallatstartup"
-
-exit 0
