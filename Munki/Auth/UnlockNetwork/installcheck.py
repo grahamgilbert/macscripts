@@ -3,7 +3,6 @@
 import subprocess
 import sys
 import plistlib
-import platform
 
 # Group System Preferences should be opened to
 group = 'everyone'
