@@ -3,7 +3,7 @@ include /usr/local/share/luggage/luggage.make
 TITLE=scriptRunnerToOutset
 REVERSE_DOMAIN=com.grahamgilbert
 PAYLOAD= \
-	pack-usr-local-outset-login-once-scriptRunnerToOutset_user_plist.py
+	pack-usr-local-outset-login-once-01-scriptRunnerToOutset_user_plist.py
 
 l_usr_local_outset: l_usr_local
 	@sudo mkdir -p ${WORK_D}/usr/local/outset/{firstboot-packages,firstboot-scripts,everyboot-scripts,login-every,login-once}
