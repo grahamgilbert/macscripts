@@ -29,7 +29,6 @@ if v == '10.9' or v == '10.10':
         formatted['group'] = group
         # Convert back to plist
         input_plist = plistlib.writePlistToString(formatted)
-        print input_plist
         # Write the plist back to the authorizationdb
         command = ['/usr/bin/security', 'authorizationdb', 'write', 'system.services.systemconfiguration.network']
         task = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
