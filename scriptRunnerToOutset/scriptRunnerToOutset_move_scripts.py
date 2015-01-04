@@ -55,9 +55,10 @@ def main():
 
     outset_runonce_dir = '/usr/local/outset/login-once'
     outset_runevery_dir = '/usr/local/outset/login-every'
-
-    copy_scripts(scriptrunner_runonce_dir, outset_runonce_dir)
-    copy_scripts(scriptrunner_runevery_dir, outset_runevery_dir)
+    if os.path.exists(scriptrunner_runonce_dir):
+        copy_scripts(scriptrunner_runonce_dir, outset_runonce_dir)
+    if os.path.exists(scriptrunner_runevery_dir):
+        copy_scripts(scriptrunner_runevery_dir, outset_runevery_dir)
 
 if __name__ == '__main__':
   main()

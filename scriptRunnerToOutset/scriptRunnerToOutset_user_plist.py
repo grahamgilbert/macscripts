@@ -51,15 +51,17 @@ def main():
     except IOError:
         d = {}
 
-    for script, date in scriptrunner.iteritems():
-        extension = get_script_type(os.path.join(scriptrunner_runonce_dir,script))
+    if os.path.exists(scriptrunner_runonce_dir):
 
-        if script[-3:] != extension:
-            script = script + extension
-        outset_path = os.path.join(outset_runonce_dir, script)
-        d[outset_path] = date
+        for script, date in scriptrunner.iteritems():
+            extension = get_script_type(os.path.join(scriptrunner_runonce_dir,script))
 
-    plistlib.writePlist(d, outset_plist)
+            if script[-3:] != extension:
+                script = script + extension
+            outset_path = os.path.join(outset_runonce_dir, script)
+            d[outset_path] = date
+
+        plistlib.writePlist(d, outset_plist)
 
 if __name__ == '__main__':
   main()
