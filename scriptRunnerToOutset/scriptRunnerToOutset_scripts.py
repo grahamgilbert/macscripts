@@ -33,7 +33,7 @@ def get_script_type(path):
         if "ruby" in first_line:
             return ".rb"
     else:
-        reutrn ".sh"
+        return ".sh"
 
 def main():
     outset_plist = os.path.expanduser('~/Library/Preferences/com.github.outset.once.plist')
