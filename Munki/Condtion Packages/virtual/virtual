@@ -21,3 +21,4 @@ elif system_profiler SPEthernetDataType | grep Vendor\ ID:\ 0x1ab8; then
 fi
 
 "${DEFAULTS}" write "${COND_DOMAIN}" "${KEY}" "${VALUE}"
+plutil -convert xml1 "$COND_DOMAIN".plist
