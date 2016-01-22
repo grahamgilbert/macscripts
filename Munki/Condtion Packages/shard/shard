@@ -1,0 +1,53 @@
+#!/usr/bin/env python
+import hashlib
+import subprocess
+import os
+import plistlib
+
+from Foundation import CFPreferencesCopyAppValue
+
+MOD_VALUE = 10000
+# Read the location of the ManagedInstallDir from ManagedInstall.plist
+BUNDLE_ID = 'ManagedInstalls'
+pref_name = 'ManagedInstallDir'
+managedinstalldir = CFPreferencesCopyAppValue(pref_name, BUNDLE_ID)
+# Make sure we're outputting our information to "ConditionalItems.plist"
+conditionalitemspath = os.path.join(managedinstalldir, 'ConditionalItems.plist')
+
+
+def get_serial():
+    '''Returns the serial number of this Mac'''
+    cmd = ['/usr/sbin/ioreg', '-c', 'IOPlatformExpertDevice', '-d', '2']
+    output = subprocess.check_output(cmd)
+    for line in output.splitlines():
+        if 'IOPlatformSerialNumber' in line:
+            return line.split(' = ')[1].replace('\"','')
+    return None
+
+def get_shard():
+    if os.path.exists('/usr/local/shard/production'):
+        shard = 100
+    elif os.path.exists('/usr/local/shard/testing'):
+        shard = 1
+    else:
+        serial = get_serial()
+        sha256 = int(hashlib.sha256(serial).hexdigest(),16)
+        shard = ((sha256 % MOD_VALUE) * 100) / float(MOD_VALUE)
+
+    newdict = dict(shard = int(shard))
+
+    # CRITICAL!
+    if os.path.exists(conditionalitemspath):
+        # "ConditionalItems.plist" exists, so read it FIRST (existing_dict)
+        existing_dict = plistlib.readPlist(conditionalitemspath)
+        # Create output_dict which joins new data generated in this script with existing data
+        output_dict = dict(existing_dict.items() + newdict.items())
+    else:
+        # "ConditionalItems.plist" does not exist,
+        # output only consists of data generated in this script
+        output_dict = newdict
+ 
+    # Write out data to "ConditionalItems.plist"
+    plistlib.writePlist(output_dict, conditionalitemspath)
+
+get_shard()
