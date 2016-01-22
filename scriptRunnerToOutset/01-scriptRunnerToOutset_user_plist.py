@@ -20,7 +20,7 @@ def get_script_type(path):
         return ".sh"
 
     # Make sure it's actually a shebang
-    if first_line[3:] == '#!/':
+    if first_line.startswith('#!/'):
         # is it bash or sh?
         if "sh" in first_line:
             return ".sh"
