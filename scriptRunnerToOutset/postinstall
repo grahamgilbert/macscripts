@@ -1,0 +1,5 @@
+#!/bin/sh
+
+touch /private/tmp/.com.github.outset.ondemand.launchd
+
+exit 0
