@@ -6,8 +6,9 @@ PACKAGE_NAME=ClearReg
 REVERSE_DOMAIN=com.grahamgilbert
 PAYLOAD=\
 	pack-AppleSetupDone \
-	pack-SetupRegComplete
-    
+	pack-SetupRegComplete \
+	pack-script-postinstall
+
 pack-AppleSetupDone:
 	@sudo mkdir -p ${WORK_D}/var/db/
 	@sudo touch ${WORK_D}/var/db/.AppleSetupDone
