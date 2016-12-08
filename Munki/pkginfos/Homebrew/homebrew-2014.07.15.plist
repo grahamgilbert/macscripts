@@ -45,6 +45,7 @@ chown $CURRENT_USER:_developer /usr/local/bin
 
 #download and install homebrew
 su $CURRENT_USER -c "/bin/bash -o pipefail -c '/usr/bin/curl -skSfL https://github.com/mxcl/homebrew/tarball/master | (cd /usr/local ; /usr/bin/tar xz -m --strip 1 -C homebrew; ln -s /usr/local/homebrew/bin/brew /usr/local/bin/brew)'"</string>
+su chown -R $CURRENT_USER:_developer /usr/local	
 	<key>unattended_install</key>
 	<true/>
 	<key>unattended_uninstall</key>
