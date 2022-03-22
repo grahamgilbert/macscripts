@@ -57,7 +57,7 @@ while counter < len(NSScreen.screens()):
     (result, error) = ws.setDesktopImageURL_forScreen_options_error_(
                 file_url, NSScreen.screens[screen_counter], options, None)
     if error:
-        print error
+        print(error)
         exit(-1)
     screen_counter += 1
 
