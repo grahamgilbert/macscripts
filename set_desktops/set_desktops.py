@@ -45,7 +45,7 @@ ws = NSWorkspace.sharedWorkspace()
 screen_counter = 0
 
 # iterate over all screens
-while counter < len(NSScreen.screens():
+while counter < len(NSScreen.screens()):
     if counter > len(picture_paths):
         picture_counter = 0
     else:
