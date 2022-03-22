@@ -14,7 +14,7 @@ task = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 groups = out.split('.')
 
-v = groups[0].strip() + '.' + groups[1].strip()
+v = int(groups[1].strip())
 
 command = ['/usr/bin/security', 'authorizationdb', 'read', 'system.services.systemconfiguration.network']
 
@@ -23,7 +23,7 @@ task = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 formatted = plistlib.readPlistFromString(out)
 
 # If we're on 10.9 and the group doesn't match, we're going to correct it.
-if v == '10.9' or v == '10.10':
+if v >= 9:
     if formatted['group'] != group:
         formatted['group'] = group
         # Convert back to plist
@@ -34,7 +34,7 @@ if v == '10.9' or v == '10.10':
         (out, err) = task.communicate(input=input_plist)
 
 # If we're on 10.8 and the rule doesn't match, we're going to correct it.
-if v == '10.8':
+elif v <= 8:
     if formatted['rule'] != 'root-or-entitled-admin-or-app-specific-admin':
         formatted['rule'] = 'root-or-entitled-admin-or-app-specific-admin'
         # Convert back to plist
