@@ -18,6 +18,7 @@ import sys
 
 parser = argparse.ArgumentParser(description='Sets the desktop picture on all screens')
 parser.add_argument('--path', help='The path of the image')
+parser.add_argument('--secondpath', help='The path of second image')
 args = vars(parser.parse_args())
 
 if args['path']:
@@ -25,6 +26,10 @@ if args['path']:
 else:
     print >> sys.stderr, 'You must supply a path for the desktop picture'
     exit(-1)
+if args['secondpath']:
+    picture2_path = args['secondpath']
+else:
+    picture2_path = None
 
 # generate a fileURL for the desktop picture
 file_url = NSURL.fileURLWithPath_(picture_path)
