@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
  
 '''Uses Cocoa classes via PyObjC to set a desktop picture on all screens.
 Tested on Mountain Lion and Mavericks. Inspired by Greg Neagle's work: https://gist.github.com/gregneagle/6957826
