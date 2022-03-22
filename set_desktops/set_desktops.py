@@ -45,7 +45,7 @@ ws = NSWorkspace.sharedWorkspace()
 screen_counter = 0
 
 # iterate over all screens
-while screen_counter < len(NSScreen.screens()):
+for screen in NSScreen.screens():
     if screen_counter > len(picture_paths):
         picture_counter = 0
     else:
@@ -55,9 +55,8 @@ while screen_counter < len(NSScreen.screens()):
     print(f"Setting screen {screen_counter} to {picture_paths[picture_counter]}")
     # tell the workspace to set the desktop picture
     (result, error) = ws.setDesktopImageURL_forScreen_options_error_(
-                file_url, NSScreen.screens[screen_counter], options, None)
+                file_url, screen, options, None)
     if error:
         print(error)
         exit(-1)
     screen_counter += 1
-
